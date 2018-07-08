@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1530831925 source:f:\mis documentos\escritorio\programacion\utn\programacion 1\ppl11c2018_arraylist\main.c
+1531011455 source:f:\mis documentos\escritorio\programacion\utn\programacion 1\ppl11c2018_arraylist\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -8,5 +8,18 @@
 
 1530403649 f:\mis documentos\escritorio\programacion\utn\programacion 1\arraylist\arraylist.h
 
-1530831317 f:\mis documentos\escritorio\programacion\utn\programacion 1\ppl11c2018_arraylist\propietario.h
+1531011473 f:\mis documentos\escritorio\programacion\utn\programacion 1\ppl11c2018_arraylist\propietario.h
+
+1530832305 source:f:\mis documentos\escritorio\programacion\utn\programacion 1\arraylist\arraylist.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"../ArrayList/ArrayList.h"
+
+1531012142 source:f:\mis documentos\escritorio\programacion\utn\programacion 1\ppl11c2018_arraylist\propietario.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"../ArrayList/ArrayList.h"
+	"Propietario.h"
 

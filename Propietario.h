@@ -15,7 +15,12 @@ typedef struct
 
 ePropietario* ePropietario_nuevo(void);
 int ePropietario_agregar(ArrayList* lista);
-int ePropietario_nuevoId(ArrayList* lista);
+int ePropietario_nuevoId(ArrayList* lista, ePropietario* elemento);
+int ePropietario_pedirNombre(ePropietario* elemento);
+int ePropietario_pedirDireccion(ePropietario* elemento);
+int ePropietario_pedirNumeroTarjeta(ePropietario* elemento);
+void ePropietario_imprimir(ePropietario* elemento);
+int ePropietario_listar(ArrayList* lista);
 
 //Seters y Getters*******************
 int ePropietario_setId(ePropietario* this, int id);

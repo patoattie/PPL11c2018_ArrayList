@@ -20,12 +20,187 @@ int ePropietario_agregar(ArrayList* lista)
 
     if(lista != NULL && unPropietario != NULL)
     {
-        id = ePropietario_nuevoId(lista);
+        id = ePropietario_nuevoId(lista, unPropietario);
         if(id > 0)
         {
             if(ePropietario_setId(unPropietario, id) == 0)
             {
+                if(ePropietario_pedirNombre(unPropietario) < 0)
+                {
+                    printf("Debe ingresar un nombre y apellido\n");
+                    huboError = 1;
+                }
+                else if(huboError == 0 && ePropietario_pedirDireccion(unPropietario) < 0)
+                {
+                    printf("Debe ingresar una direccion\n");
+                    huboError = 1;
+                }
+                else if(huboError == 0 && ePropietario_pedirNumeroTarjeta(unPropietario) < 0)
+                {
+                    printf("Debe ingresar un numero de tarjeta\n");
+                    huboError = 1;
+                }
 
+                if(huboError == 0)
+                {
+                    retorno = al_add(lista, unPropietario);
+                    if(retorno < 0)
+                    {
+                        free(unPropietario);
+                        printf("Hubo un error al dar de alta el Propietario en la Lista\n");
+                    }
+                }
+            }
+        }
+    }
+
+    return retorno;
+}
+
+int ePropietario_nuevoId(ArrayList* lista, ePropietario* elemento)
+{
+    int nuevoId = 0;
+    int listaVacia;
+    int ultimoElemento;
+
+    if(lista != NULL)
+    {
+        listaVacia = al_isEmpty(lista);
+        if(listaVacia == 1)
+        {
+            nuevoId = 1;
+        }
+        else if(listaVacia == 0)
+        {
+            elemento = ePropietario_nuevo();
+            if(elemento != NULL)
+            {
+                ultimoElemento = al_len(lista) - 1;
+                elemento = (ePropietario*)al_get(lista, ultimoElemento);
+                nuevoId = elemento->id++;
+            }
+        }
+    }
+
+    return nuevoId;
+}
+
+int ePropietario_pedirNombre(ePropietario* elemento)
+{
+    int retorno = -1;
+    char* nombre;
+
+    if(elemento != NULL)
+    {
+        nombre = (char*)malloc(sizeof(char) * TAM_NOMBRE_APELLIDO);
+        if(nombre != NULL)
+        {
+            printf("\nIngrese nombre y apellido: ");
+            fflush(stdin);
+            gets(nombre);
+            if(strcmp(nombre, "") == 0)
+            {
+                free(nombre);
+            }
+            else
+            {
+                retorno = ePropietario_setNombre(elemento, nombre);
+                if(retorno < 0)
+                {
+                    free(nombre);
+                }
+            }
+        }
+    }
+
+    return retorno;
+}
+
+int ePropietario_pedirDireccion(ePropietario* elemento)
+{
+    int retorno = -1;
+    char* direccion;
+
+    if(elemento != NULL)
+    {
+        direccion = (char*)malloc(sizeof(char) * TAM_DIRECCION);
+        if(direccion != NULL)
+        {
+            printf("\nIngrese direccion: ");
+            fflush(stdin);
+            gets(direccion);
+            if(strcmp(direccion, "") == 0)
+            {
+                free(direccion);
+            }
+            else
+            {
+                retorno = ePropietario_setDireccion(elemento, direccion);
+                if(retorno < 0)
+                {
+                    free(direccion);
+                }
+            }
+        }
+    }
+
+    return retorno;
+}
+
+int ePropietario_pedirNumeroTarjeta(ePropietario* elemento)
+{
+    int retorno = -1;
+    char* numeroTarjeta;
+
+    if(elemento != NULL)
+    {
+        numeroTarjeta = (char*)malloc(sizeof(char) * TAM_TARJETA);
+        if(numeroTarjeta != NULL)
+        {
+            printf("\nIngrese numero de tarjeta: ");
+            fflush(stdin);
+            gets(numeroTarjeta);
+            if(strcmp(numeroTarjeta, "") == 0)
+            {
+                free(numeroTarjeta);
+            }
+            else
+            {
+                retorno = ePropietario_setNumeroTarjeta(elemento, numeroTarjeta);
+                if(retorno < 0)
+                {
+                    free(numeroTarjeta);
+                }
+            }
+        }
+    }
+
+    return retorno;
+}
+
+void ePropietario_imprimir(ePropietario* elemento)
+{
+    printf("%d - %s - %s - %s\n", ePropietario_getId(elemento), ePropietario_getNombre(elemento), ePropietario_getDireccion(elemento), ePropietario_getNumeroTarjeta(elemento));
+}
+
+int ePropietario_listar(ArrayList* lista)
+{
+    int i;
+    int retorno = -1;
+    ePropietario* unPropietario = NULL;
+
+    if(lista != NULL)
+    {
+        if(al_isEmpty(lista) == 0)
+        {
+            for(i = 0; i < al_len(lista); i++)
+            {
+                unPropietario = (ePropietario*)al_get(lista, i);
+                if(unPropietario != NULL)
+                {
+                    ePropietario_imprimir(unPropietario);
+                    retorno = 0;
+                }
             }
         }
     }
@@ -115,7 +290,13 @@ int ePropietario_setNumeroTarjeta(ePropietario* this, const char* numeroTarjeta)
 char* ePropietario_getNumeroTarjeta(ePropietario* this)
 {
     char* retorno = NULL;
-    strcpy(retorno, this->numeroTarjeta);
+
+    if(this != NULL)
+    {
+        retorno = this->numeroTarjeta;
+        //strcpy(retorno, this->numeroTarjeta);
+    }
+
     return retorno;
 }
 //***********************************

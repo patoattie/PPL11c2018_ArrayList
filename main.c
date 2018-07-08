@@ -34,13 +34,29 @@ int main()
         switch(opcion)
         {
             case 1:
+                puntoMenu = ePropietario_agregar(alPropietario);
+                if(puntoMenu == 0)
+                {
+                    printf("Alta de Propietario OK\n");
+                }
+                else
+                {
+                    printf("Error al dar de alta Propietario\n");
+                }
                 break;
+
             case 2:
                 break;
             case 3:
                 break;
             case 4:
+                puntoMenu = ePropietario_listar(alPropietario);
+                if(puntoMenu < 0)
+                {
+                    printf("No hay Propietarios ingresados\n");
+                }
                 break;
+
             case 5:
                 break;
             case 6:
