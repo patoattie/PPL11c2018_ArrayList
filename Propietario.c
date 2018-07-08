@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "../ArrayList/ArrayList.h"
 #include "Propietario.h"
 
@@ -17,6 +18,7 @@ int ePropietario_agregar(ArrayList* lista)
     int huboError = 0;
     int id;
     ePropietario* unPropietario = ePropietario_nuevo();
+    char confirma;
 
     if(lista != NULL && unPropietario != NULL)
     {
@@ -43,12 +45,37 @@ int ePropietario_agregar(ArrayList* lista)
 
                 if(huboError == 0)
                 {
-                    retorno = al_add(lista, unPropietario);
-                    if(retorno < 0)
+                    do
+                    {
+                        printf("Se va a dar de alta el Propietario:\n");
+                        ePropietario_imprimir(unPropietario);
+                        printf("Esta seguro? (S/N): ");
+                        fflush(stdin);
+                        scanf("%c", &confirma);
+                        if(toupper(confirma) != 'S' && toupper(confirma) != 'N')
+                        {
+                            printf("Respuesta no valida. Debe ingresar S o N\n");
+                        }
+                    } while(toupper(confirma) != 'S' && toupper(confirma) != 'N');
+
+                    if(toupper(confirma) == 'S')
+                    {
+                        retorno = al_add(lista, unPropietario);
+                        if(retorno < 0)
+                        {
+                            free(unPropietario);
+                            printf("Hubo un error al dar de alta el Propietario en la Lista\n");
+                        }
+                    }
+                    else
                     {
                         free(unPropietario);
-                        printf("Hubo un error al dar de alta el Propietario en la Lista\n");
+                        printf("La accion fue cancelada\n");
                     }
+                }
+                else
+                {
+                    free(unPropietario);
                 }
             }
         }
@@ -82,6 +109,21 @@ int ePropietario_nuevoId(ArrayList* lista, ePropietario* elemento)
     }
 
     return nuevoId;
+}
+
+int ePropietario_pedirId(ePropietario* elemento)
+{
+    int retorno = -1;
+    int id;
+
+    if(elemento != NULL)
+    {
+        printf("\nIngrese id del Propietario: ");
+        scanf("%d", &id);
+        retorno = ePropietario_setId(elemento, id);
+    }
+
+    return retorno;
 }
 
 int ePropietario_pedirNombre(ePropietario* elemento)
@@ -233,13 +275,14 @@ int ePropietario_getId(ePropietario* this)
     return retorno;
 }
 
-int ePropietario_setNombre(ePropietario* this, const char* nombre)
+int ePropietario_setNombre(ePropietario* this, char* nombre)
 {
     int retorno = -1;
 
     if(this != NULL && nombre != NULL)
     {
-        strcpy(this->nombre, nombre);
+        //strcpy(this->nombre, nombre);
+        this->nombre = nombre;
         retorno = 0;
     }
 
@@ -258,13 +301,14 @@ char* ePropietario_getNombre(ePropietario* this)
     return retorno;
 }
 
-int ePropietario_setDireccion(ePropietario* this, const char* direccion)
+int ePropietario_setDireccion(ePropietario* this, char* direccion)
 {
     int retorno = -1;
 
     if(this != NULL && direccion != NULL)
     {
-        strcpy(this->direccion, direccion);
+        //strcpy(this->direccion, direccion);
+        this->direccion = direccion;
         retorno = 0;
     }
 
@@ -283,13 +327,14 @@ char* ePropietario_getDireccion(ePropietario* this)
     return retorno;
 }
 
-int ePropietario_setNumeroTarjeta(ePropietario* this, const char* numeroTarjeta)
+int ePropietario_setNumeroTarjeta(ePropietario* this, char* numeroTarjeta)
 {
     int retorno = -1;
 
     if(this != NULL && numeroTarjeta != NULL)
     {
-        strcpy(this->numeroTarjeta, numeroTarjeta);
+        //strcpy(this->numeroTarjeta, numeroTarjeta);
+        this->numeroTarjeta = numeroTarjeta;
         retorno = 0;
     }
 

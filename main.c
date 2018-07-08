@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "../ArrayList/ArrayList.h"
 #include "Propietario.h"
 
@@ -75,6 +76,7 @@ int main()
                 break;
             case 13:
                 seguir = 'n';
+                al_deleteArrayList(alPropietario);
                 break;
             default:
                 printf("\nOpcion no contemplada, por favor vuelva a elegir");

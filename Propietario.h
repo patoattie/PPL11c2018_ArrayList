@@ -8,14 +8,18 @@
 typedef struct
 {
     int id;
-    char nombre[TAM_NOMBRE_APELLIDO];
+    /*char nombre[TAM_NOMBRE_APELLIDO];
     char direccion[TAM_DIRECCION];
-    char numeroTarjeta[TAM_TARJETA];
+    char numeroTarjeta[TAM_TARJETA];*/
+    char* nombre;
+    char* direccion;
+    char* numeroTarjeta;
 } ePropietario;
 
 ePropietario* ePropietario_nuevo(void);
 int ePropietario_agregar(ArrayList* lista);
 int ePropietario_nuevoId(ArrayList* lista, ePropietario* elemento);
+int ePropietario_pedirId(ePropietario* elemento);
 int ePropietario_pedirNombre(ePropietario* elemento);
 int ePropietario_pedirDireccion(ePropietario* elemento);
 int ePropietario_pedirNumeroTarjeta(ePropietario* elemento);
@@ -25,11 +29,11 @@ int ePropietario_listar(ArrayList* lista);
 //Seters y Getters*******************
 int ePropietario_setId(ePropietario* this, int id);
 int ePropietario_getId(ePropietario* this);
-int ePropietario_setNombre(ePropietario* this, const char* nombre);
+int ePropietario_setNombre(ePropietario* this, char* nombre);
 char* ePropietario_getNombre(ePropietario* this);
-int ePropietario_setDireccion(ePropietario* this, const char* direccion);
+int ePropietario_setDireccion(ePropietario* this, char* direccion);
 char* ePropietario_getDireccion(ePropietario* this);
-int ePropietario_setNumeroTarjeta(ePropietario* this, const char* numeroTarjeta);
+int ePropietario_setNumeroTarjeta(ePropietario* this, char* numeroTarjeta);
 char* ePropietario_getNumeroTarjeta(ePropietario* this);
 //***********************************
 
