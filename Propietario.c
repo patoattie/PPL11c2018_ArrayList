@@ -72,12 +72,11 @@ int ePropietario_nuevoId(ArrayList* lista, ePropietario* elemento)
         }
         else if(listaVacia == 0)
         {
-            elemento = ePropietario_nuevo();
             if(elemento != NULL)
             {
                 ultimoElemento = al_len(lista) - 1;
                 elemento = (ePropietario*)al_get(lista, ultimoElemento);
-                nuevoId = elemento->id++;
+                nuevoId = elemento->id + 1;
             }
         }
     }
@@ -250,7 +249,12 @@ int ePropietario_setNombre(ePropietario* this, const char* nombre)
 char* ePropietario_getNombre(ePropietario* this)
 {
     char* retorno = NULL;
-    strcpy(retorno, this->nombre);
+
+    if(this != NULL)
+    {
+        retorno = this->nombre;
+    }
+
     return retorno;
 }
 
@@ -270,7 +274,12 @@ int ePropietario_setDireccion(ePropietario* this, const char* direccion)
 char* ePropietario_getDireccion(ePropietario* this)
 {
     char* retorno = NULL;
-    strcpy(retorno, this->direccion);
+
+    if(this != NULL)
+    {
+        retorno = this->direccion;
+    }
+
     return retorno;
 }
 
@@ -294,7 +303,6 @@ char* ePropietario_getNumeroTarjeta(ePropietario* this)
     if(this != NULL)
     {
         retorno = this->numeroTarjeta;
-        //strcpy(retorno, this->numeroTarjeta);
     }
 
     return retorno;
