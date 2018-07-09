@@ -12,13 +12,11 @@ ePropietario* ePropietario_nuevo(void)
     return unPropietario;
 }
 
-int ePropietario_agregar(ArrayList* lista)
+ePropietario* ePropietario_nuevoPedirDatos(ArrayList* lista)
 {
-    int retorno = -1;
     int huboError = 0;
     int id;
     ePropietario* unPropietario = ePropietario_nuevo();
-    char confirma;
 
     if(lista != NULL && unPropietario != NULL)
     {
@@ -29,55 +27,83 @@ int ePropietario_agregar(ArrayList* lista)
             {
                 if(ePropietario_pedirNombre(unPropietario) < 0)
                 {
-                    printf("Debe ingresar un nombre y apellido\n");
                     huboError = 1;
                 }
                 else if(huboError == 0 && ePropietario_pedirDireccion(unPropietario) < 0)
                 {
-                    printf("Debe ingresar una direccion\n");
                     huboError = 1;
                 }
                 else if(huboError == 0 && ePropietario_pedirNumeroTarjeta(unPropietario) < 0)
                 {
-                    printf("Debe ingresar un numero de tarjeta\n");
                     huboError = 1;
                 }
 
-                if(huboError == 0)
+                if(huboError == 1)
                 {
-                    do
-                    {
-                        printf("Se va a dar de alta el Propietario:\n");
-                        ePropietario_imprimir(unPropietario);
-                        printf("Esta seguro? (S/N): ");
-                        fflush(stdin);
-                        scanf("%c", &confirma);
-                        if(toupper(confirma) != 'S' && toupper(confirma) != 'N')
-                        {
-                            printf("Respuesta no valida. Debe ingresar S o N\n");
-                        }
-                    } while(toupper(confirma) != 'S' && toupper(confirma) != 'N');
-
-                    if(toupper(confirma) == 'S')
-                    {
-                        retorno = al_add(lista, unPropietario);
-                        if(retorno < 0)
-                        {
-                            free(unPropietario);
-                            printf("Hubo un error al dar de alta el Propietario en la Lista\n");
-                        }
-                    }
-                    else
-                    {
-                        free(unPropietario);
-                        printf("La accion fue cancelada\n");
-                    }
-                }
-                else
-                {
-                    free(unPropietario);
+                    ePropietario_borrar(unPropietario);
+                    unPropietario = NULL;
                 }
             }
+        }
+    }
+
+    return unPropietario;
+}
+
+void ePropietario_borrar(ePropietario* elemento)
+{
+    if(elemento != NULL)
+    {
+        free(elemento);
+    }
+}
+
+char* char_nuevo(int longitud)
+{
+    char* unChar;
+    unChar = (char*)malloc(sizeof(char) * longitud);
+    return unChar;
+}
+
+void char_borrar(char* elemento)
+{
+    if(elemento != NULL)
+    {
+        free(elemento);
+    }
+}
+
+int ePropietario_agregar(ArrayList* lista, ePropietario* elemento)
+{
+    int retorno = -1;
+    char confirma;
+
+    if(lista != NULL && elemento != NULL)
+    {
+        do
+        {
+            printf("Se va a dar de alta el Propietario:\n");
+            ePropietario_imprimir(elemento);
+            printf("Esta seguro? (S/N): ");
+            fflush(stdin);
+            scanf("%c", &confirma);
+            if(toupper(confirma) != 'S' && toupper(confirma) != 'N')
+            {
+                printf("Respuesta no valida. Debe ingresar S o N\n");
+            }
+        } while(toupper(confirma) != 'S' && toupper(confirma) != 'N');
+
+        if(toupper(confirma) == 'S')
+        {
+            retorno = al_add(lista, elemento);
+            if(retorno < 0)
+            {
+                printf("Hubo un error al dar de alta el Propietario en la Lista\n");
+            }
+        }
+        else
+        {
+            printf("La accion fue cancelada\n");
         }
     }
 
@@ -129,26 +155,35 @@ int ePropietario_pedirId(ePropietario* elemento)
 int ePropietario_pedirNombre(ePropietario* elemento)
 {
     int retorno = -1;
+    char nombreAux[CHAR_BUFFER];
     char* nombre;
+    int longitud;
 
     if(elemento != NULL)
     {
-        nombre = (char*)malloc(sizeof(char) * TAM_NOMBRE_APELLIDO);
-        if(nombre != NULL)
+        printf("\nIngrese nombre y apellido: ");
+        fflush(stdin);
+        gets(nombreAux);
+        longitud = strlen(nombreAux);
+        if(longitud == 0)
         {
-            printf("\nIngrese nombre y apellido: ");
-            fflush(stdin);
-            gets(nombre);
-            if(strcmp(nombre, "") == 0)
+            printf("Debe ingresar un nombre y apellido\n");
+        }
+        else if(longitud > TAM_NOMBRE_APELLIDO)
+        {
+            printf("El nombre y apellido debe tener como maximo %d caracteres\n", TAM_NOMBRE_APELLIDO);
+        }
+        else
+        {
+            nombre = char_nuevo(longitud + 1);
+            if(nombre != NULL)
             {
-                free(nombre);
-            }
-            else
-            {
+                strcpy(nombre, nombreAux);
                 retorno = ePropietario_setNombre(elemento, nombre);
                 if(retorno < 0)
                 {
-                    free(nombre);
+                    char_borrar(nombre);
+                    nombre = NULL;
                 }
             }
         }
@@ -160,26 +195,35 @@ int ePropietario_pedirNombre(ePropietario* elemento)
 int ePropietario_pedirDireccion(ePropietario* elemento)
 {
     int retorno = -1;
+    char direccionAux[CHAR_BUFFER];
     char* direccion;
+    int longitud;
 
     if(elemento != NULL)
     {
-        direccion = (char*)malloc(sizeof(char) * TAM_DIRECCION);
-        if(direccion != NULL)
+        printf("\nIngrese direccion: ");
+        fflush(stdin);
+        gets(direccionAux);
+        longitud = strlen(direccionAux);
+        if(longitud == 0)
         {
-            printf("\nIngrese direccion: ");
-            fflush(stdin);
-            gets(direccion);
-            if(strcmp(direccion, "") == 0)
+            printf("Debe ingresar una direccion\n");
+        }
+        else if(longitud > TAM_DIRECCION)
+        {
+            printf("La direccion debe tener como maximo %d caracteres\n", TAM_DIRECCION);
+        }
+        else
+        {
+            direccion = char_nuevo(longitud + 1);
+            if(direccion != NULL)
             {
-                free(direccion);
-            }
-            else
-            {
+                strcpy(direccion, direccionAux);
                 retorno = ePropietario_setDireccion(elemento, direccion);
                 if(retorno < 0)
                 {
-                    free(direccion);
+                    char_borrar(direccion);
+                    direccion = NULL;
                 }
             }
         }
@@ -191,26 +235,35 @@ int ePropietario_pedirDireccion(ePropietario* elemento)
 int ePropietario_pedirNumeroTarjeta(ePropietario* elemento)
 {
     int retorno = -1;
+    char numeroTarjetaAux[CHAR_BUFFER];
     char* numeroTarjeta;
+    int longitud;
 
     if(elemento != NULL)
     {
-        numeroTarjeta = (char*)malloc(sizeof(char) * TAM_TARJETA);
-        if(numeroTarjeta != NULL)
+        printf("\nIngrese numero de tarjeta de credito: ");
+        fflush(stdin);
+        gets(numeroTarjetaAux);
+        longitud = strlen(numeroTarjetaAux);
+        if(longitud == 0)
         {
-            printf("\nIngrese numero de tarjeta: ");
-            fflush(stdin);
-            gets(numeroTarjeta);
-            if(strcmp(numeroTarjeta, "") == 0)
+            printf("Debe ingresar un numero de tarjeta de credito\n");
+        }
+        else if(longitud > TAM_TARJETA)
+        {
+            printf("El numero de tarjeta de credito debe tener como maximo %d caracteres\n", TAM_TARJETA);
+        }
+        else
+        {
+            numeroTarjeta = char_nuevo(longitud + 1);
+            if(numeroTarjeta != NULL)
             {
-                free(numeroTarjeta);
-            }
-            else
-            {
+                strcpy(numeroTarjeta, numeroTarjetaAux);
                 retorno = ePropietario_setNumeroTarjeta(elemento, numeroTarjeta);
                 if(retorno < 0)
                 {
-                    free(numeroTarjeta);
+                    char_borrar(numeroTarjeta);
+                    numeroTarjeta = NULL;
                 }
             }
         }
@@ -247,6 +300,28 @@ int ePropietario_listar(ArrayList* lista)
     }
 
     return retorno;
+}
+
+void ePropietario_limpiarMemoria(ArrayList* lista)
+{
+    int i;
+    ePropietario* unPropietario = NULL;
+
+    if(lista != NULL)
+    {
+        if(al_isEmpty(lista) == 0)
+        {
+            for(i = 0; i < al_len(lista); i++)
+            {
+                unPropietario = (ePropietario*)al_get(lista, i);
+                char_borrar(unPropietario->nombre);
+                char_borrar(unPropietario->direccion);
+                char_borrar(unPropietario->numeroTarjeta);
+                ePropietario_borrar(unPropietario);
+            }
+        }
+        al_deleteArrayList(lista);
+    }
 }
 
 //Seters y Getters*******************

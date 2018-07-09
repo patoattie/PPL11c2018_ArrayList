@@ -11,6 +11,7 @@ int main()
     int opcion = 0;
     int puntoMenu;
     ArrayList* alPropietario = al_newArrayList();
+    ePropietario* unPropietario = NULL;
 
     while(seguir == 's')
     {
@@ -35,10 +36,19 @@ int main()
         switch(opcion)
         {
             case 1:
-                puntoMenu = ePropietario_agregar(alPropietario);
-                if(puntoMenu == 0)
+                unPropietario = ePropietario_nuevoPedirDatos(alPropietario);
+                if(unPropietario != NULL)
                 {
-                    printf("Alta de Propietario OK\n");
+                    puntoMenu = ePropietario_agregar(alPropietario, unPropietario);
+                    if(puntoMenu == 0)
+                    {
+                        printf("Alta de Propietario OK\n");
+                    }
+                    else
+                    {
+                        ePropietario_borrar(unPropietario);
+                        unPropietario = NULL;
+                    }
                 }
                 else
                 {
@@ -76,7 +86,7 @@ int main()
                 break;
             case 13:
                 seguir = 'n';
-                al_deleteArrayList(alPropietario);
+                ePropietario_limpiarMemoria(alPropietario);
                 break;
             default:
                 printf("\nOpcion no contemplada, por favor vuelva a elegir");
