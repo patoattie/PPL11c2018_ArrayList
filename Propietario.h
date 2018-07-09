@@ -5,21 +5,24 @@
 #define TAM_DIRECCION 50
 #define TAM_TARJETA 50
 #define CHAR_BUFFER 512
+#define ARCHIVO_PROPIETARIOS "Propietarios.dat"
 
 typedef struct
 {
     int id;
-    char* nombre;
-    char* direccion;
-    char* numeroTarjeta;
+    char nombre[TAM_NOMBRE_APELLIDO];
+    char direccion[TAM_DIRECCION];
+    char numeroTarjeta[TAM_TARJETA];
 } ePropietario;
 
 ePropietario* ePropietario_nuevo(void);
 ePropietario* ePropietario_nuevoPedirDatos(ArrayList* lista);
 void ePropietario_borrar(ePropietario* elemento);
-char* char_nuevo(int longitud);
-void char_borrar(char* elemento);
+int ePropietario_confirmaOperacion(ePropietario* elemento, const char* mensaje);
+int ePropietario_cargarDesdeArchivo(ArrayList* lista, const char* nombreArchivo);
 int ePropietario_agregar(ArrayList* lista, ePropietario* elemento);
+int ePropietario_agregarEnArchivo(const char* nombreArchivo, ePropietario* elemento);
+ePropietario* ePropietario_buscar(ArrayList* lista, int id);
 int ePropietario_nuevoId(ArrayList* lista, ePropietario* elemento);
 int ePropietario_pedirId(ePropietario* elemento);
 int ePropietario_pedirNombre(ePropietario* elemento);
@@ -32,11 +35,11 @@ void ePropietario_limpiarMemoria(ArrayList* lista);
 //Seters y Getters*******************
 int ePropietario_setId(ePropietario* this, int id);
 int ePropietario_getId(ePropietario* this);
-int ePropietario_setNombre(ePropietario* this, char* nombre);
+int ePropietario_setNombre(ePropietario* this, const char* nombre);
 char* ePropietario_getNombre(ePropietario* this);
-int ePropietario_setDireccion(ePropietario* this, char* direccion);
+int ePropietario_setDireccion(ePropietario* this, const char* direccion);
 char* ePropietario_getDireccion(ePropietario* this);
-int ePropietario_setNumeroTarjeta(ePropietario* this, char* numeroTarjeta);
+int ePropietario_setNumeroTarjeta(ePropietario* this, const char* numeroTarjeta);
 char* ePropietario_getNumeroTarjeta(ePropietario* this);
 //***********************************
 
