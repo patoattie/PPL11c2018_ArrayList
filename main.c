@@ -162,7 +162,52 @@ int main()
                     break;
 
                 case 3:
+                    puntoMenu = ePropietario_listar(listaPropietarios);
+                    if(puntoMenu < 0)
+                    {
+                        printf("No hay Propietarios ingresados\n");
+                    }
+                    else
+                    {
+                        printf("Ingrese ID del Propietario a dar de baja: ");
+                        scanf("%d", &idPropietario);
+                        indicePropietario = ePropietario_buscar(listaPropietarios, idPropietario);
+                        if(indicePropietario < 0)
+                        {
+                            printf("No se hallo el Propietario buscado");
+                        }
+                        else
+                        {
+                            unPropietario = (ePropietario*)al_get(listaPropietarios, indicePropietario);
+                            if(unPropietario != NULL)
+                            {
+                                printf("Se va a dar de baja el Propietario:\n");
+                                ePropietario_imprimir(unPropietario);
+                                if(ePropietario_confirmaOperacion() == 0)
+                                {
+                                    puntoMenu = ePropietario_eliminar(listaPropietarios, indicePropietario);
+                                    if(puntoMenu == 0)
+                                    {
+                                        puntoMenu = ePropietario_guardarEnArchivo(listaPropietarios, ARCHIVO_PROPIETARIOS);
+                                        if(puntoMenu == 0)
+                                        {
+                                            printf("Baja de Propietario OK\n");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    printf("Accion cancelada\n");
+                                }
+                            }
+                            else
+                            {
+                                printf("Error al dar de alta Propietario\n");
+                            }
+                        }
+                    }
                     break;
+
                 case 4:
                     puntoMenu = ePropietario_listar(listaPropietarios);
                     if(puntoMenu < 0)

@@ -334,6 +334,73 @@ int ePropietario_modificarEnArchivo(const char* nombreArchivo, ePropietario* ele
     return retorno;
 }
 
+int ePropietario_eliminar(ArrayList* lista, int indice)
+{
+    int retorno = -1;
+
+    if(lista != NULL)
+    {
+        retorno = al_remove(lista, indice);
+        if(retorno < 0)
+        {
+            printf("Hubo un error al dar de baja el Propietario de la Lista\n");
+        }
+    }
+
+    return retorno;
+}
+
+int ePropietario_guardarEnArchivo(ArrayList* lista, const char* nombreArchivo)
+{
+    int retorno = -1;
+    FILE* archivo;
+    int cantidadEscrita;
+    ePropietario* unPropietario = NULL;
+    int i;
+    int huboError = 0;
+
+    if(nombreArchivo != NULL)
+    {
+        archivo = fopen(nombreArchivo, "wb");
+        if(archivo != NULL)
+        {
+            unPropietario = ePropietario_nuevo();
+            if(unPropietario != NULL)
+            {
+                for(i = 0; i < al_len(lista); i++)
+                {
+                    unPropietario = (ePropietario*)al_get(lista, i);
+
+                    if(unPropietario != NULL)
+                    {
+                        cantidadEscrita = fwrite(unPropietario, sizeof(ePropietario), 1, archivo);
+                        if(cantidadEscrita != 1)
+                        {
+                            huboError = 1;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        huboError = 1;
+                        break;
+                    }
+                }
+                ePropietario_borrar(unPropietario);
+                unPropietario = NULL;
+
+                if(huboError == 0)
+                {
+                    retorno = 0;
+                }
+            }
+            fclose(archivo);
+        }
+    }
+
+    return retorno;
+}
+
 int ePropietario_buscar(ArrayList* lista, int id)
 {
     int retorno = -1;

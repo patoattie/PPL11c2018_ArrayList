@@ -28,6 +28,8 @@ int ePropietario_agregar(ArrayList* lista, ePropietario* elemento);
 int ePropietario_agregarEnArchivo(const char* nombreArchivo, ePropietario* elemento);
 int ePropietario_modificar(ArrayList* lista, ePropietario* elemento, int indice);
 int ePropietario_modificarEnArchivo(const char* nombreArchivo, ePropietario* elemento);
+int ePropietario_eliminar(ArrayList* lista, int indice);
+int ePropietario_guardarEnArchivo(ArrayList* lista, const char* nombreArchivo);
 int ePropietario_buscar(ArrayList* lista, int id);
 int ePropietario_nuevoId(ArrayList* lista);
 int ePropietario_pedirNombre(ePropietario* elemento);
