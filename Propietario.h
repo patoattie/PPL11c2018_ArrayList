@@ -15,16 +15,21 @@ typedef struct
     char numeroTarjeta[TAM_TARJETA];
 } ePropietario;
 
+//Constructores y Destructores*******
 ePropietario* ePropietario_nuevo(void);
 ePropietario* ePropietario_nuevoPedirDatos(ArrayList* lista);
+ePropietario* ePropietario_nuevoModificar(ePropietario* elemento);
+//***********************************
+
 void ePropietario_borrar(ePropietario* elemento);
-int ePropietario_confirmaOperacion(ePropietario* elemento, const char* mensaje);
+int ePropietario_confirmaOperacion(void);
 int ePropietario_cargarDesdeArchivo(ArrayList* lista, const char* nombreArchivo);
 int ePropietario_agregar(ArrayList* lista, ePropietario* elemento);
 int ePropietario_agregarEnArchivo(const char* nombreArchivo, ePropietario* elemento);
-ePropietario* ePropietario_buscar(ArrayList* lista, int id);
-int ePropietario_nuevoId(ArrayList* lista, ePropietario* elemento);
-int ePropietario_pedirId(ePropietario* elemento);
+int ePropietario_modificar(ArrayList* lista, ePropietario* elemento, int indice);
+int ePropietario_modificarEnArchivo(const char* nombreArchivo, ePropietario* elemento);
+int ePropietario_buscar(ArrayList* lista, int id);
+int ePropietario_nuevoId(ArrayList* lista);
 int ePropietario_pedirNombre(ePropietario* elemento);
 int ePropietario_pedirDireccion(ePropietario* elemento);
 int ePropietario_pedirNumeroTarjeta(ePropietario* elemento);

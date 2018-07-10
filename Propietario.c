@@ -5,6 +5,7 @@
 #include "../ArrayList/ArrayList.h"
 #include "Propietario.h"
 
+//Constructores y Destructores*******
 ePropietario* ePropietario_nuevo(void)
 {
     ePropietario* unPropietario;
@@ -14,14 +15,15 @@ ePropietario* ePropietario_nuevo(void)
 
 ePropietario* ePropietario_nuevoPedirDatos(ArrayList* lista)
 {
-    int huboError = 0;
     int id;
-    ePropietario* unPropietario = ePropietario_nuevo();
+    ePropietario* unPropietario = NULL;
+    int huboError = 0;
 
-    if(lista != NULL && unPropietario != NULL)
+    if(lista != NULL)
     {
-        id = ePropietario_nuevoId(lista, unPropietario);
-        if(id > 0)
+        id = ePropietario_nuevoId(lista);
+        unPropietario = ePropietario_nuevo();
+        if(unPropietario != NULL)
         {
             if(ePropietario_setId(unPropietario, id) == 0)
             {
@@ -44,6 +46,83 @@ ePropietario* ePropietario_nuevoPedirDatos(ArrayList* lista)
                     unPropietario = NULL;
                 }
             }
+            else
+            {
+                ePropietario_borrar(unPropietario);
+                unPropietario = NULL;
+            }
+        }
+    }
+
+    return unPropietario;
+}
+
+ePropietario* ePropietario_nuevoModificar(ePropietario* elemento)
+{
+    ePropietario* unPropietario = NULL;
+    int huboError = 0;
+    int modificaDato = 0;
+
+    if(elemento != NULL)
+    {
+        unPropietario = ePropietario_nuevo();
+        if(unPropietario != NULL)
+        {
+            if(ePropietario_setId(unPropietario, ePropietario_getId(elemento)) == 0)
+            {
+                printf("Modificar nombre y apellido\n");
+                if(ePropietario_confirmaOperacion() == 0)
+                {
+                    modificaDato = 1;
+                    if(ePropietario_pedirNombre(unPropietario) < 0)
+                    {
+                        huboError = 1;
+                    }
+                }
+                else if(ePropietario_setNombre(unPropietario, ePropietario_getNombre(elemento)) < 0)
+                {
+                    huboError = 1;
+                }
+
+                printf("Modificar direccion\n");
+                if(ePropietario_confirmaOperacion() == 0)
+                {
+                    modificaDato = 1;
+                    if(ePropietario_pedirDireccion(unPropietario) < 0)
+                    {
+                        huboError = 1;
+                    }
+                }
+                else if(ePropietario_setDireccion(unPropietario, ePropietario_getDireccion(elemento)) < 0)
+                {
+                    huboError = 1;
+                }
+
+                printf("Modificar numero de tarjeta de credito\n");
+                if(ePropietario_confirmaOperacion() == 0)
+                {
+                    modificaDato = 1;
+                    if(ePropietario_pedirNumeroTarjeta(unPropietario) < 0)
+                    {
+                        huboError = 1;
+                    }
+                }
+                else if(ePropietario_setNumeroTarjeta(unPropietario, ePropietario_getNumeroTarjeta(elemento)) < 0)
+                {
+                    huboError = 1;
+                }
+
+                if(huboError == 1 || modificaDato == 0)
+                {
+                    ePropietario_borrar(unPropietario);
+                    unPropietario = NULL;
+                }
+            }
+            else
+            {
+                ePropietario_borrar(unPropietario);
+                unPropietario = NULL;
+            }
         }
     }
 
@@ -57,31 +136,27 @@ void ePropietario_borrar(ePropietario* elemento)
         free(elemento);
     }
 }
+//***********************************
 
-int ePropietario_confirmaOperacion(ePropietario* elemento, const char* mensaje)
+int ePropietario_confirmaOperacion(void)
 {
     int retorno = -1;
     char confirma;
 
-    if(elemento != NULL)
+    do
     {
-        do
+        printf("Confirma? (S/N): ");
+        fflush(stdin);
+        scanf("%c", &confirma);
+        if(toupper(confirma) != 'S' && toupper(confirma) != 'N')
         {
-            printf("%s", mensaje);
-            ePropietario_imprimir(elemento);
-            printf("Esta seguro? (S/N): ");
-            fflush(stdin);
-            scanf("%c", &confirma);
-            if(toupper(confirma) != 'S' && toupper(confirma) != 'N')
-            {
-                printf("Respuesta no valida. Debe ingresar S o N\n");
-            }
-        } while(toupper(confirma) != 'S' && toupper(confirma) != 'N');
-
-        if(toupper(confirma) == 'S')
-        {
-            retorno = 0;
+            printf("Respuesta no valida. Debe ingresar S o N\n");
         }
+    } while(toupper(confirma) != 'S' && toupper(confirma) != 'N');
+
+    if(toupper(confirma) == 'S')
+    {
+        retorno = 0;
     }
 
     return retorno;
@@ -190,11 +265,80 @@ int ePropietario_agregarEnArchivo(const char* nombreArchivo, ePropietario* eleme
     return retorno;
 }
 
-ePropietario* ePropietario_buscar(ArrayList* lista, int id)
+int ePropietario_modificar(ArrayList* lista, ePropietario* elemento, int indice)
 {
+    int retorno = -1;
+
+    if(lista != NULL && elemento != NULL)
+    {
+        retorno = al_set(lista, indice, elemento);
+        if(retorno < 0)
+        {
+            printf("Hubo un error al modificar el Propietario en la Lista\n");
+        }
+    }
+
+    return retorno;
+}
+
+int ePropietario_modificarEnArchivo(const char* nombreArchivo, ePropietario* elemento)
+{
+    int retorno = -1;
+    FILE* archivo;
+    int cantidadEscrita;
+    int cantidadLeida;
+    ePropietario* unPropietario = NULL;
+
+    if(nombreArchivo != NULL && elemento != NULL)
+    {
+        archivo = fopen(nombreArchivo, "r+b");
+        if(archivo != NULL)
+        {
+            unPropietario = ePropietario_nuevo();
+            if(unPropietario != NULL)
+            {
+                while(!feof(archivo))
+                {
+                    cantidadLeida = fread(unPropietario, sizeof(ePropietario), 1, archivo);
+
+                    if(feof(archivo))
+                    {
+                        break;
+                    }
+
+                    if(cantidadLeida == 1)
+                    {
+                        if(unPropietario->id == elemento->id)
+                        {
+                            fseek(archivo, (long)(-1) * sizeof(ePropietario), SEEK_CUR);
+                            cantidadEscrita = fwrite(elemento, sizeof(ePropietario), 1, archivo);
+                            if(cantidadEscrita == 1)
+                            {
+                                retorno = 0;
+                            }
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                ePropietario_borrar(unPropietario);
+                unPropietario = NULL;
+            }
+            fclose(archivo);
+        }
+    }
+
+    return retorno;
+}
+
+int ePropietario_buscar(ArrayList* lista, int id)
+{
+    int retorno = -1;
     ePropietario* unPropietario = NULL;
     int i;
-    int elementoHallado = 0;
 
     if(lista != NULL && id > 0)
     {
@@ -207,27 +351,23 @@ ePropietario* ePropietario_buscar(ArrayList* lista, int id)
                 {
                     if(ePropietario_getId(unPropietario) == id)
                     {
-                        elementoHallado = 1;
+                        retorno = i;
                         break;
                     }
                 }
             }
-
-            if(elementoHallado == 0)
-            {
-                unPropietario = NULL;
-            }
         }
     }
 
-    return unPropietario;
+    return retorno;
 }
 
-int ePropietario_nuevoId(ArrayList* lista, ePropietario* elemento)
+int ePropietario_nuevoId(ArrayList* lista)
 {
     int nuevoId = 0;
     int listaVacia;
     int ultimoElemento;
+    ePropietario* unPropietario = NULL;
 
     if(lista != NULL)
     {
@@ -238,31 +378,13 @@ int ePropietario_nuevoId(ArrayList* lista, ePropietario* elemento)
         }
         else if(listaVacia == 0)
         {
-            if(elemento != NULL)
-            {
-                ultimoElemento = al_len(lista) - 1;
-                elemento = (ePropietario*)al_get(lista, ultimoElemento);
-                nuevoId = elemento->id + 1;
-            }
+            ultimoElemento = al_len(lista) - 1;
+            unPropietario = (ePropietario*)al_get(lista, ultimoElemento);
+            nuevoId = unPropietario->id + 1;
         }
     }
 
     return nuevoId;
-}
-
-int ePropietario_pedirId(ePropietario* elemento)
-{
-    int retorno = -1;
-    int id;
-
-    if(elemento != NULL)
-    {
-        printf("\nIngrese id del Propietario: ");
-        scanf("%d", &id);
-        retorno = ePropietario_setId(elemento, id);
-    }
-
-    return retorno;
 }
 
 int ePropietario_pedirNombre(ePropietario* elemento)

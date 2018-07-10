@@ -12,6 +12,9 @@ int main()
     int puntoMenu;
     ArrayList* listaPropietarios = al_newArrayList();
     ePropietario* unPropietario = NULL;
+    ePropietario* otroPropietario = NULL;
+    int indicePropietario;
+    int idPropietario;
 
     if(ePropietario_cargarDesdeArchivo(listaPropietarios, ARCHIVO_PROPIETARIOS) == 0)
     {
@@ -41,7 +44,9 @@ int main()
                     unPropietario = ePropietario_nuevoPedirDatos(listaPropietarios);
                     if(unPropietario != NULL)
                     {
-                        if(ePropietario_confirmaOperacion(unPropietario, "Se va a dar de alta el Propietario:\n") == 0)
+                        printf("Se va a dar de alta el Propietario:\n");
+                        ePropietario_imprimir(unPropietario);
+                        if(ePropietario_confirmaOperacion() == 0)
                         {
                             puntoMenu = ePropietario_agregar(listaPropietarios, unPropietario);
                             if(puntoMenu == 0)
@@ -53,7 +58,7 @@ int main()
                                 }
                                 else
                                 {
-                                    //ePropietario_borrar
+                                    al_remove(listaPropietarios, al_len(listaPropietarios) - 1); //Vuelvo atras el cambio en el ArrayList
                                     ePropietario_borrar(unPropietario);
                                     unPropietario = NULL;
                                 }
@@ -78,7 +83,84 @@ int main()
                     break;
 
                 case 2:
+                    puntoMenu = ePropietario_listar(listaPropietarios);
+                    if(puntoMenu < 0)
+                    {
+                        printf("No hay Propietarios ingresados\n");
+                    }
+                    else
+                    {
+                        printf("Ingrese ID del Propietario a modificar: ");
+                        scanf("%d", &idPropietario);
+                        indicePropietario = ePropietario_buscar(listaPropietarios, idPropietario);
+                        if(indicePropietario < 0)
+                        {
+                            printf("No se hallo el Propietario buscado");
+                        }
+                        else
+                        {
+                            unPropietario = (ePropietario*)al_get(listaPropietarios, indicePropietario);
+                            if(unPropietario != NULL)
+                            {
+                                printf("Se va a modificar el Propietario:\n");
+                                ePropietario_imprimir(unPropietario);
+                                if(ePropietario_confirmaOperacion() == 0)
+                                {
+                                    otroPropietario = ePropietario_nuevoModificar(unPropietario);
+                                    if(otroPropietario != NULL)
+                                    {
+                                        printf("Se va a modificar el Propietario:\n");
+                                        ePropietario_imprimir(unPropietario);
+                                        printf("Por el Propietario:\n");
+                                        ePropietario_imprimir(otroPropietario);
+                                        if(ePropietario_confirmaOperacion() == 0)
+                                        {
+                                            puntoMenu = ePropietario_modificar(listaPropietarios, otroPropietario, indicePropietario);
+                                            if(puntoMenu == 0)
+                                            {
+                                                puntoMenu = ePropietario_modificarEnArchivo(ARCHIVO_PROPIETARIOS, otroPropietario);
+                                                if(puntoMenu == 0)
+                                                {
+                                                    printf("Modificacion de Propietario OK\n");
+                                                }
+                                                else
+                                                {
+                                                    ePropietario_modificar(listaPropietarios, unPropietario, indicePropietario); //Vuelvo atras el cambio en el ArrayList
+                                                    ePropietario_borrar(otroPropietario);
+                                                    otroPropietario = NULL;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                ePropietario_borrar(otroPropietario);
+                                                otroPropietario = NULL;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            printf("Accion cancelada\n");
+                                            ePropietario_borrar(otroPropietario);
+                                            otroPropietario = NULL;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        printf("No modifica datos\n");
+                                    }
+                                }
+                                else
+                                {
+                                    printf("Accion cancelada\n");
+                                }
+                            }
+                            else
+                            {
+                                printf("Error al dar de alta Propietario\n");
+                            }
+                        }
+                    }
                     break;
+
                 case 3:
                     break;
                 case 4:
